@@ -4,6 +4,20 @@
 #include <regex>
 #include <string>
 
+int getHeight(Student *node) {
+  if (node == nullptr) {
+    return 0;
+  }
+  return node->height;
+}
+
+void updateHeight(Student *node) {
+  if (node == nullptr) {
+    return;
+  }
+  node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
+}
+
 bool checkNameValidity(std::string name) {
   std::regex pattern("^[a-zA-Z ]*$");
   if (std::regex_match(name, pattern))
@@ -50,6 +64,42 @@ Student *rotateRight(Student *node) {
   return newParent;
 }
 
+Student *balanceTree(Student *root) {
+
+  if (root == nullptr) {
+    return nullptr;
+  }
+  updateHeight(root);
+  int balanceFactor = getHeight(root->left) - getHeight(root->right);
+
+  if (balanceFactor > 1) { // Tree is left heavy
+
+    if (getHeight(root->left->left) >=
+        getHeight(root->left->right)) { // Left Left
+
+      return rotateRight(root);
+
+    } else {
+
+      root->left = rotateLeft(root->left);
+      return rotateRight(root);
+    }
+
+  } else if (balanceFactor < -1) {
+
+    if (getHeight(root->right->right) >= getHeight(root->right->left)) {
+
+      return rotateLeft(root);
+
+    } else {
+
+      root->right = rotateRight(root->right);
+      return rotateLeft(root);
+    }
+  }
+  return root; // Balancing is not needed
+}
+
 void Tree::insert(std::string NAME, int ID) {
 
   // Check's if name and ID are valid, if they aren't 'unsuccessful' is printed
@@ -59,4 +109,7 @@ void Tree::insert(std::string NAME, int ID) {
     return;
   }
   insertS(root, NAME, ID);
+  balanceTree(root);
 }
+
+void Tree::remove(int ID) {}
