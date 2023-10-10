@@ -21,6 +21,10 @@ void inOrder(Student *root, std::string &names);
 void preOrder(Student *root, std::string &names);
 void postOrder(Student *root, std::string &names);
 
+// REMINDER: updateHeight needs to apply to every node!!!!
+
+
+
 int getHeight(Student *node) {
   if (node == nullptr) {
     return 0;
